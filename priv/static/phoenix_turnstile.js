@@ -3,7 +3,12 @@ function callbackEvent(self, name, eventName) {
     const events = self.el.dataset.events || ""
 
     if (events.split(",").indexOf(name) > -1) {
-      self.pushEventTo(self.el, `turnstile:${eventName || name}`, payload)
+      const eName = `turnstile:${eventName || name}`
+      dispatchEvent(new Event(eName))
+
+      if (typeof liveSocket !== "undefined" && liveSocket.isConnected()) {
+        self.pushEventTo(self.el, eName, payload)
+      }
     }
   }
 }
